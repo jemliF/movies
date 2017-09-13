@@ -1,0 +1,22 @@
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                    aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" ui-sref="home" ui-sref-active="active">Movies</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li><a ui-sref="newMovie" ui-sref-active="active" ng-if="loggedIn">New Movie</a></li>
+                <li><a ui-sref="login" ui-sref-active="active" ng-if="!loggedIn">Login</a></li>
+                <li><a ui-sref="signup" ui-sref-active="active" ng-if="!loggedIn">Signup</a></li>
+                <li><a role="button" ng-click="logout()" ng-if="loggedIn">Logout</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>

@@ -1,0 +1,53 @@
+{
+  "name": "movies",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker": "sudo chmod -R 777 . && sudo docker run -d -p 27017:27017 -p 28017:28017 -e MONGODB_USER=\"root\" -e MONGODB_DATABASE=\"movies\" -e MONGODB_PASS=\"password\" -v $(pwd)/data:/data/db tutum/mongodb",
+    "dev": "nodemon server.js",
+    "prod": "npm i -g pm2 && pm2 server.js",
+    "gulp": "gulp start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "angular": "^1.6.6",
+    "angular-animate": "^1.6.6",
+    "angular-bootstrap": "^0.12.2",
+    "angular-cookies": "^1.6.6",
+    "angular-input-stars": "^1.5.5",
+    "angular-jwt": "^0.1.9",
+    "angular-loading-bar": "^0.9.0",
+    "angular-touch": "^1.6.6",
+    "angular-ui-router": "^1.0.3",
+    "angularjs-dropdown-multiselect": "^2.0.0-beta.10",
+    "bcrypt": "^1.0.3",
+    "body-parser": "^1.18.0",
+    "bootstrap": "^3.3.7",
+    "cors": "^2.8.4",
+    "dotenv": "^4.0.0",
+    "express": "^4.15.4",
+    "express-boom": "^2.0.0",
+    "joi": "^10.6.0",
+    "jquery": "^3.2.1",
+    "jsonwebtoken": "^8.0.1",
+    "mongoose": "^4.11.11",
+    "morgan": "^1.8.2",
+    "passport": "^0.4.0",
+    "passport-http": "^0.3.0",
+    "slug": "^0.9.1"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.18.13",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^3.8.0",
+    "gulp-concat": "^2.6.1",
+    "gulp-image": "^3.0.0",
+    "gulp-javascript-obfuscator": "^1.1.2",
+    "gulp-uglify": "^3.0.0",
+    "uglify": "^0.1.5"
+  }
+}

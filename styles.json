@@ -1,0 +1,6 @@
+[
+  "./node_modules/bootstrap/dist/css/bootstrap.min.css",
+  "./node_modules/angular-loading-bar/src/loading-bar.css",
+  "./node_modules/angular-input-stars/angular-input-stars.css",
+  "./client/**/*.css"
+]
