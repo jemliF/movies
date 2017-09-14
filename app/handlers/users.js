@@ -15,14 +15,9 @@ exports.login = (req, res) => {
                     if (user) {
                         user.comparePasswords(req.body.password, (err, isMatch) => {
                             if (err) {
-                                console.error(err);
                                 res.boom.badImplementation('Error logging in user');
                             } else {
                                 if (isMatch) {
-                                    console.log(user);
-                                    /*let token = jwt.sign(user, process.env.JWT_SECRET, {
-                                        expiresIn: 60 * 60 * 24 * 7
-                                    });*/
                                     let token = jwt.sign({
                                         exp: Math.floor(Date.now() / 1000) + (60 * 60 * 24),
                                         user
@@ -48,13 +43,11 @@ exports.login = (req, res) => {
 exports.signup = (req, res) => {
     Joi.validate(req.body, UserValidation, (err, value) => {
         if (err) {
-            console.error(err);
             res.boom.badData(hooks.prettifyValidationErrors(err.details));
         } else {
             let newUser = new User(value);
             newUser.save((err) => {
                 if (err) {
-                    console.error(err);
                     if (err.code == '11000') {
                         res.boom.badData('User \'' + value.email + '\' already exists');
                     } else {

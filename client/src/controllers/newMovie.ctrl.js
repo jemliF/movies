@@ -3,18 +3,21 @@ moviesApp.controller('NewMovieController', ['$scope', 'currentUser', '$state', '
         $scope.movie = {};
         $scope.selectedActors = [];
         $scope.actors = [];
+        $scope.actorList = [];
         $scope.newActor = {};
         $scope.actorSelectOptions = {enableSearch: true};
         $scope.toggleNewActor = false;
         $scope.createMovie = function () {
-
+            $scope.movie.createdBy = currentUser._id;
             MovieService.create($scope.movie)
                 .then(function (movie) {
                     alert('Movie created successfully');
                     $state.go('home');
                 }, function (err) {
                     console.error(err);
-                    alert(err.data.message);
+                    if (err.data.message) {
+                        alert(err.data.message);
+                    }
                 });
         };
 
@@ -40,7 +43,8 @@ moviesApp.controller('NewMovieController', ['$scope', 'currentUser', '$state', '
 
         ActorService.getAll()
             .then(function (res) {
-                $scope.actors = res.data.map(function (actor) {
+                $scope.actors = res.data;
+                $scope.actorList = res.data.map(function (actor) {
                     return {id: actor._id, label: actor.firstname + ' ' + actor.lastname};
                 });
             }, function (err) {

@@ -34,6 +34,7 @@ app.use('/', express.static('public'));
 app.use('/api/v1', require('./app/controllers/users'));
 app.use('/api/v1', require('./app/controllers/movies'));
 app.use('/api/v1', require('./app/controllers/actors'));
+app.use('/api/v1', require('./app/controllers/ratings'));
 
 mongodb.check();
 require('./utils/passport');

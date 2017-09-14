@@ -21,10 +21,14 @@ const schema = new mongoose.Schema({
         required: true
     },
     rating: {
-        type: Number
+        type: Number,
+        default: 0
     },
     actors: {
-        type: [Actor]
+        type: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'actor'
+        }]
     },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
@@ -46,6 +50,7 @@ schema.pre('save', function (next) {
     var movie = this;
     if (!movie.isModified('name')) return next();
     movie.slug = slug(movie.name);
+    next();
 });
 
 const model = mongoose.model('movie', schema);

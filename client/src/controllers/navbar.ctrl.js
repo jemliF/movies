@@ -1,6 +1,6 @@
-moviesApp.controller('NavbarController', ['$scope', '$rootScope', '$cookies',
-    function ($scope, $rootScope, $cookies) {
-        $scope.loggedIn = true;
+moviesApp.controller('NavbarController', ['$scope', '$rootScope', '$cookies', '$state',
+    function ($scope, $rootScope, $cookies, $state) {
+        $scope.loggedIn = false;
         if ($cookies.get('moviesToken')) {
             $scope.loggedIn = true;
         }
@@ -14,5 +14,6 @@ moviesApp.controller('NavbarController', ['$scope', '$rootScope', '$cookies',
             console.log('logout');
             $cookies.remove('moviesToken');
             $scope.loggedIn = false;
+            $state.go('login');
         };
     }]);

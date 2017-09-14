@@ -1,1 +1,59 @@
-<h3>Home</h3>
+<div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 col-lg-offset-3  col-md-offset-3">
+    <h3>Movies</h3>
+    <div class="row">
+        <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 form-group">
+            <label for="sortField">Sort By</label>
+            <select name="sortField" id="sortField" class="form-control" ng-model="sortField" ng-change="fetchMovies()">
+                <option value="createdAt">Creation Date</option>
+                <option value="name">Name</option>
+                <option value="releaseDate">ReleaseDate</option>
+                <option value="duration">Duration</option>
+            </select>
+        </div>
+        <div class="col-md-6 col-lg-6 col-sm-12 col-xs-12 form-group">
+            <label for="sortSense">Order</label>
+            <select name="sortSense" id="sortSense" class="form-control" ng-model="sortSense" ng-change="fetchMovies()">
+                <option value="desc">Desc</option>
+                <option value="asc">Asc</option>
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 form-group">
+            <input type="text" class="form-control" ng-model="filter" placeholder="Type here for a quick search..."
+                   autofocus>
+        </div>
+    </div>
+    <div class="row">
+        <div class="well well-sm" ng-repeat="movie in movies|filter:filter">
+            <div class="row">
+                <div class="col-xs-3 col-md-3 text-center">
+                    <img ng-src="https://dummyimage.com/256x256&text={{movie.createdBy.firstname+' '+movie.createdBy.lastname}}"
+                         class="img-rounded img-responsive"/>
+                </div>
+                <div class="col-xs-9 col-md-9 section-box">
+                    <h4>{{movie.name}}</h4>
+                    <hr/>
+                    <div>
+                        <small><i class="fa fa-calendar"></i>&nbsp;{{movie.releaseDate|date:'MMM/dd/yyyy'}}</small>
+                        <span class="separator">|</span>
+                        <small><i class="fa fa-clock-o"></i>&nbsp;{{movie.duration}}&nbsp;h</small>
+                    </div>
+                    <hr/>
+                    <div class="row rating-desc">
+                        <div class="col-md-8 col-sm-6">
+                            <span uib-rating ng-model="movie.rating" max="5" read-only="false"
+                                  titles="['one','two','three', 'four', 'five']"></span>
+                            <input-stars max="5" ng-model="userRatings[$index].value"
+                                         on-star-click="rate($index)"></input-stars>
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            {{movie.ratings.length}}
+                            <i class="fa fa-star text-warning">&nbsp;{{movie.rating}}</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -6,12 +6,10 @@ const hooks = require('../../utils/hooks');
 exports.create = (req, res) => {
     Joi.validate(req.body, MovieValidation, (err, value) => {
         if (err) {
-            console.error(err);
-            res.boom.badData(hooks.prettifyValidationErrors(err.details));
+            res.boom.badData(JSON.stringify(hooks.prettifyValidationErrors(err.details)));
         } else {
             let newMovie = new Movie(value);
             newMovie.save((err) => {
-                console.error(err);
                 if (err) {
                     if (err.code == '11000') {
                         res.boom.badData('Movie \'' + value.name + '\' already exists');
@@ -19,7 +17,7 @@ exports.create = (req, res) => {
                         res.boom.badImplementation('Error saving movie');
                     }
                 } else {
-                    res.status(200).json(newMovie);
+                    res.json(newMovie);
                 }
             });
         }
@@ -42,7 +40,12 @@ exports.get = (req, res) => {
 };
 
 exports.getAll = (req, res) => {
+    let sort = {};
+    sort[req.query.sortBy] = req.query.sortSense === 'desc' ? -1 : 1;
     Movie.find({})
+        .populate('actors')
+        .populate('createdBy', '-password')
+        .sort(sort)
         .exec({}, (err, movies) => {
             if (err) {
                 res.boom.badImplementation('Error finding movies');

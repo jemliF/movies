@@ -9,12 +9,16 @@ const schema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    value:{
+      type: Number,
+      required: true
+    },
     user: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
     },
     movie: {
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'movie'
     },
     createdAt: {

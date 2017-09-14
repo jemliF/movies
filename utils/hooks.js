@@ -2,16 +2,18 @@ const jwt = require('jsonwebtoken');
 
 exports.prettifyValidationErrors = (err) => {
     let prettyResults = [];
+    let pretty = {};
+    let path = '';
     for (let field in err) {
+        pretty = {};
+        path = '';
         if (err.hasOwnProperty(field)) {
-            let pretty = {};
-            let path = '';
             path = err[field].path;
             pretty[path] = err[field].message.replace(/['"]+/g, '');
             prettyResults.push(pretty);
         }
     }
-    return prettyResults;
+    return JSON.stringify(prettyResults);
 };
 
 exports.checkToken = (req, res, next) => {
