@@ -79,15 +79,18 @@ exports.update = (req, res) => {
     Rating.findOne({_id: req.params.id})
         .exec({}, (err, rating) => {
             if (err) {
+                console.error(err);
                 res.boom.badImplementation('Error identifying rating');
             } else {
                 if (rating) {
                     Joi.validate(req.body, RatingValidation, (err, value) => {
                         if (err) {
+                            console.error(err);
                             res.boom.badData(hooks.prettifyValidationErrors(err.details));
                         } else {
                             Rating.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}, function (err, updatedRating) {
                                 if (err) {
+                                    console.error(err);
                                     if (err.code == '11000') {
                                         res.boom.badData('Rating already exists');
                                     } else {

@@ -1,0 +1,13 @@
+<div class="col-md-8 col-lg-8 col-sm-12 col-xs-12 col-lg-offset-2  col-md-offset-2">
+    <h3>My Movies</h3>
+    <div class="row">
+        <div class="col-md-12 col-lg-12 col-sm-12 col-xs-12 form-group">
+            <input type="text" class="form-control" ng-model="filter" placeholder="Type here for a quick search..."
+                   autofocus>
+        </div>
+    </div>
+    <div class="row">
+        <movie class="col-md-12 col-lg-12 col-sm-12 col-xs-12 form-group" ng-repeat="movie in movies|filter:filter"
+               movie="movie" options="options"></movie>
+    </div>
+</div>

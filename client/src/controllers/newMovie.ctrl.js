@@ -32,7 +32,8 @@ moviesApp.controller('NewMovieController', ['$scope', 'currentUser', '$state', '
             ActorService.create($scope.newActor)
                 .then(function (res) {
                     console.log(res.data);
-                    $scope.actors.push({
+                    $scope.actors.push(res.data);
+                    $scope.actorList.push({
                         id: res.data._id,
                         label: res.data.firstname + ' ' + res.data.lastname
                     });

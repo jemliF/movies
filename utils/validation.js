@@ -20,7 +20,7 @@ exports.Movie = Joi.object().keys({
     duration: Joi.number().positive().required(),
     rating: Joi.number().positive(),
     actors: Joi.array().items(Joi.any()),
-    createdBy: Joi.string()
+    createdBy: Joi.string().required()
 });
 
 exports.Rating = Joi.object().keys({
@@ -28,7 +28,7 @@ exports.Rating = Joi.object().keys({
     createdAt: Joi.date(),
     updatedAt: Joi.date(),
     comment: Joi.string(),
-    value: Joi.number().positive().min(1).max(5),
+    value: Joi.number().positive().min(1).max(5).required(),
     date: Joi.date(),
     movie: Joi.string().required(),
     user: Joi.string().required()

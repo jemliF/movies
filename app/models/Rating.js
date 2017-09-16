@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const schema = new mongoose.Schema({
     comment: {
         type: String,
-        required: true
+        required: false
     },
     date: {
         type: Date,
@@ -31,6 +31,8 @@ const schema = new mongoose.Schema({
 }, {
     versionKey: false
 });
+
+schema.index({user: 1, movie: 1}, {unique: true});
 
 
 const model = mongoose.model('rating', schema);

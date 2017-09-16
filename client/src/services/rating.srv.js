@@ -24,4 +24,8 @@ moviesApp.service('RatingService', ['$http', function ($http) {
         }
     };
 
+    this.update = function (id, update) {
+        return $http.put(API_URL + id, update);
+    };
+
 }]);

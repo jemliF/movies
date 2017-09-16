@@ -1,4 +1,5 @@
 const Movie = require('../models/Movie').model;
+const Rating = require('../models/Rating').model;
 const MovieValidation = require('../../utils/validation').Movie;
 const Joi = require('joi');
 const hooks = require('../../utils/hooks');
@@ -40,10 +41,14 @@ exports.get = (req, res) => {
 };
 
 exports.getAll = (req, res) => {
-    let sort = {};
+    let sort = {}, find = {};
     sort[req.query.sortBy] = req.query.sortSense === 'desc' ? -1 : 1;
+    find = {
+        user: req.query.user,
+        movie: req.query.movie
+    };
     Movie.find({})
-        .populate('actors')
+        .populate({path: 'actors', model: 'actor'})
         .populate('createdBy', '-password')
         .sort(sort)
         .exec({}, (err, movies) => {
@@ -93,11 +98,17 @@ exports.delete = (req, res) => {
                 res.boom.badImplementation('Error identifying movie');
             } else {
                 if (movie) {
-                    Movie.remove({_id: req.params.id}, function (err) {
+                    Rating.remove({movie: movie._id}, function (err) {
                         if (err) {
-                            res.boom.badImplementation('Error updating movie');
+                            res.boom.badImplementation('Error deleting movie ratings');
                         } else {
-                            res.status(200).end('Movie deleted successfully');
+                            Movie.remove({_id: req.params.id}, function (err) {
+                                if (err) {
+                                    res.boom.badImplementation('Error deleting movie');
+                                } else {
+                                    res.status(200).end('Movie deleted successfully');
+                                }
+                            });
                         }
                     });
                 } else {

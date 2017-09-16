@@ -1,11 +1,11 @@
-moviesApp.controller('HomeController', ['$scope', 'UserService', 'MovieService', '$cookies', '$rootScope',
-    function ($scope, UserService, MovieService, $cookies, $rootScope) {
+moviesApp.controller('MyMoviesController', ['$scope', 'UserService', 'MovieService', '$cookies',
+    function ($scope, UserService, MovieService, $cookies) {
 
         $scope.filter = '';
         $scope.sortField = 'createdAt';
         $scope.sortSense = 'desc';
         $scope.options = {
-            editable: false
+            editable: true
         };
         if ($cookies.get('moviesSortBy') && $cookies.get('moviesSortSense')) {
             $scope.sortField = $cookies.get('moviesSortBy');
@@ -26,13 +26,6 @@ moviesApp.controller('HomeController', ['$scope', 'UserService', 'MovieService',
             $cookies.put('moviesSortBy', $scope.sortField);
             $cookies.put('moviesSortSense', $scope.sortSense);
         };
-
-        $rootScope.$on('movieDeleted', function (evt, movieId) {
-            console.log('movieDeleted');
-            $scope.movies = $scope.movies.filter(function (movie) {
-                movie._id === movieId;
-            });
-        });
 
         getMovies();
     }]);
