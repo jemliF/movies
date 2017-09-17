@@ -17,7 +17,10 @@ exports.create = (req, res) => {
                         res.boom.badImplementation('Error saving rating');
                     }
                 } else {
-                    res.json(newRating);
+                    Rating
+                        .populate(newRating, 'user movie', (err, rating) => {
+                            res.json(newRating);
+                        });
                 }
             });
         }
@@ -25,7 +28,7 @@ exports.create = (req, res) => {
 };
 
 exports.get = (req, res) => {
-    Rating.findOne({_id: req.params.id})
+    Rating.findOne({ _id: req.params.id })
         .exec({}, (err, rating) => {
             if (err) {
                 res.boom.badImplementation('Error finding rating');
@@ -43,13 +46,13 @@ exports.getAll = (req, res) => {
     let request = {};
     req.query.movie ? request.movie = req.query.movie : null;
     req.query.user ? request.user = req.query.user : null;
-    console.log(request);
+
     Rating.find(request)
         .populate('movie')
         .populate('user', '-password')
         .exec({}, (err, ratings) => {
             if (err) {
-                console.error(err);
+
                 res.boom.badImplementation('Error finding ratings');
             } else {
                 req.query.total ? res.json(ratings.length || 0) : res.json(ratings || []);
@@ -76,28 +79,31 @@ exports.getAll = (req, res) => {
 };
 
 exports.update = (req, res) => {
-    Rating.findOne({_id: req.params.id})
+    Rating.findOne({ _id: req.params.id })
         .exec({}, (err, rating) => {
             if (err) {
-                console.error(err);
+
                 res.boom.badImplementation('Error identifying rating');
             } else {
                 if (rating) {
                     Joi.validate(req.body, RatingValidation, (err, value) => {
                         if (err) {
-                            console.error(err);
+
                             res.boom.badData(hooks.prettifyValidationErrors(err.details));
                         } else {
-                            Rating.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}, function (err, updatedRating) {
+                            Rating.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, updatedRating) {
                                 if (err) {
-                                    console.error(err);
+
                                     if (err.code == '11000') {
                                         res.boom.badData('Rating already exists');
                                     } else {
                                         res.boom.badImplementation('Error updating rating');
                                     }
                                 } else {
-                                    res.json(updatedRating);
+                                    Rating
+                                        .populate(updatedRating, 'user movie', (err, rating) => {
+                                            res.json(updatedRating);
+                                        });
                                 }
                             });
                         }
@@ -110,13 +116,13 @@ exports.update = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-    Rating.findOne({_id: req.params.id})
+    Rating.findOne({ _id: req.params.id })
         .exec({}, (err, rating) => {
             if (err) {
                 res.boom.badImplementation('Error identifying rating');
             } else {
                 if (rating) {
-                    Rating.remove({_id: req.params.id}, function (err) {
+                    Rating.remove({ _id: req.params.id }, function (err) {
                         if (err) {
                             res.boom.badImplementation('Error updating rating');
                         } else {

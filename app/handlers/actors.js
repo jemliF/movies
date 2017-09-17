@@ -38,13 +38,13 @@ exports.getAll = (req, res) => {
 exports.create = (req, res) => {
     Joi.validate(req.body, ActorValidation, (err, value) => {
         if (err) {
-            console.error(err);
+            
             res.boom.badData(hooks.prettifyValidationErrors(err.details));
         } else {
             let newActor = new Actor(value);
             newActor.save((err) => {
                 if (err) {
-                    console.error(err);
+                    
                     if (err.code == '11000') {
                         res.boom.badData('Actor \'' + value.email + '\' already exists');
                     } else {

@@ -5,6 +5,7 @@ moviesApp.controller('LoginController', ['$scope', 'UserService', '$cookies', '$
     $scope.login = function () {
         UserService.login($scope.email, $scope.password)
             .then(function (res) {
+                
                 alert('Welcome');
                 $state.go('home');
                 $cookies.put('moviesToken', res.data.token);

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jasmine-node .",
     "docker": "sudo chmod -R 777 . && sudo docker run -d -p 27017:27017 -p 28017:28017 -e MONGODB_USER=\"root\" -e MONGODB_DATABASE=\"movies\" -e MONGODB_PASS=\"password\" -v $(pwd)/data:/data/db tutum/mongodb",
     "dev": "nodemon server.js",
     "prod": "npm i -g pm2 && pm2 server.js",
@@ -19,6 +19,7 @@
     "angular-input-stars": "^1.5.5",
     "angular-jwt": "^0.1.9",
     "angular-loading-bar": "^0.9.0",
+    "angular-socket-io": "^0.7.0",
     "angular-ui-router": "^1.0.3",
     "angularjs-dropdown-multiselect": "^2.0.0-beta.10",
     "bcrypt": "^1.0.3",
@@ -35,16 +36,21 @@
     "morgan": "^1.8.2",
     "passport": "^0.4.0",
     "passport-http": "^0.3.0",
-    "slug": "^0.9.1"
+    "slug": "^0.9.1",
+    "socket.io": "^2.0.3",
+    "socket.io-client": "^2.0.3"
   },
   "devDependencies": {
+    "axios": "^0.16.2",
     "browser-sync": "^2.18.13",
     "gulp": "^3.9.1",
     "gulp-clean-css": "^3.8.0",
     "gulp-concat": "^2.6.1",
     "gulp-image": "^3.0.0",
     "gulp-javascript-obfuscator": "^1.1.2",
+    "gulp-sourcemaps": "^2.6.1",
     "gulp-uglify": "^3.0.0",
+    "jasmine-node": "^1.14.5",
     "uglify": "^0.1.5"
   }
 }

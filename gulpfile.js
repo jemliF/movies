@@ -1,25 +1,20 @@
 const gulp = require('gulp');
 const concat = require('gulp-concat');
-const browserSync = require('browser-sync').create();
 const image = require('gulp-image');
 const uglify = require('gulp-uglify');
-const obfuscator = require('gulp-javascript-obfuscator');
+//const obfuscator = require('gulp-javascript-obfuscator');
 const cleanCSS = require('gulp-clean-css');
 const scripts = require('./scripts');
 const styles = require('./styles');
-
-// Some pointless comments for our project.
+const sourcemaps = require('gulp-sourcemaps');
 
 var devMode = false;
 
 gulp.task('css', function () {
     gulp.src(styles)
         .pipe(concat('bundle.css'))
-        .pipe(cleanCSS({compatibility: 'ie8'}))
-        .pipe(gulp.dest('public/dist/css'))
-        .pipe(browserSync.reload({
-            stream: true
-        }));
+        .pipe(cleanCSS({ compatibility: 'ie8' }))
+        .pipe(gulp.dest('public/dist/css'));
 });
 
 gulp.task('image', function () {
@@ -30,13 +25,11 @@ gulp.task('image', function () {
 
 gulp.task('js', function () {
     gulp.src(scripts)
+        .pipe(sourcemaps.init())
         .pipe(concat('bundle.js'))
         //.pipe(uglify())
         //.pipe(obfuscator())
-        .pipe(gulp.dest('public/dist/js'))
-        .pipe(browserSync.reload({
-            stream: true
-        }));
+        .pipe(gulp.dest('public/dist/js'));
 });
 
 gulp.task('fonts', function () {
@@ -47,28 +40,16 @@ gulp.task('fonts', function () {
 
 gulp.task('html', function () {
     return gulp.src('./client/**/*.html')
-        .pipe(gulp.dest('public/'))
-        .pipe(browserSync.reload({
-            stream: true
-        }));
+        .pipe(gulp.dest('public/'));
 });
 
 gulp.task('build', function () {
     gulp.start(['css', 'js', 'html', 'image', 'fonts'])
 });
 
-gulp.task('browser-sync', function () {
-    browserSync.init(null, {
-        open: false,
-        server: {
-            baseDir: 'dist',
-        }
-    });
-});
-
 gulp.task('start', function () {
     devMode = true;
-    gulp.start(['build', 'browser-sync']);
+    gulp.start(['build']);
     gulp.task('default', ['image']);
     gulp.watch(['./client/**/*.css'], ['css']);
     gulp.watch(['./client/**/*.js'], ['js']);

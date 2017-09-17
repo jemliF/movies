@@ -1,13 +1,17 @@
-moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService', '$cookies', 'RatingService', 'currentUser', '$rootScope',
-    function ($scope, UserService, MovieService, $cookies, RatingService, currentUser, $rootScope) {
+moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService', '$cookies', 'RatingService', 'currentUser', '$rootScope', 'eventSocket',
+    function ($scope, UserService, MovieService, $cookies, RatingService, currentUser, $rootScope, eventSocket) {
         var sum = 0;
+        $scope.actorList = [];
+        $scope.newActor = {};
+        $scope.actorSelectOptions = { enableSearch: true };
+        $scope.actors = [];
         $scope.userRating = {
             value: 0,
             comment: ''
         };
         $scope.showCommentField = false;
         $scope.showRatings = false;
-        $scope.toggleEdit = false;
+        //$scope.toggleEdit = false;
         $scope.movieAlreadyRatedByUser = false;
         var fetchMovieRatings = function () {
             RatingService.getAllBy(null, $scope.movie._id)
@@ -51,6 +55,7 @@ moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService'
                     .then(function (rating) {
                         console.log(rating);
                         $scope.userRating = rating.data;
+                        eventSocket.emit('movieRated', { rating: rating.data });
                         fetchMovieRatings();
                     }, function (err) {
                         console.error(err);
@@ -66,6 +71,7 @@ moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService'
                     .then(function (rating) {
                         console.log(rating);
                         $scope.userRating = rating.data;
+                        eventSocket.emit('movieRated', { rating: rating.data });
                         fetchMovieRatings();
                     }, function (err) {
                         console.error(err);
@@ -78,6 +84,7 @@ moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService'
                 MovieService.delete($scope.movie._id)
                     .then(function (result) {
                         $rootScope.$broadcast('movieDeleted', $scope.movie._id);
+                        eventSocket.emit('movieDeleted', { movie: $scope.movie });
                         alert('Movie deleted successfully');
                     }, function (err) {
                         console.error(err);
@@ -87,4 +94,9 @@ moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService'
                     });
             }
         }
+
+        $scope.toggleEdit = function () {
+            $scope.editableMovie = $scope.movie;
+            $('#editModal').modal('show');
+        };
     }]);

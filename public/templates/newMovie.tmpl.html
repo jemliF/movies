@@ -13,7 +13,7 @@
             <input type="date" class="form-control" ng-model="movie.releaseDate" name="releaseDate"
                    placeholder="Release Date">
         </div>
-        <div>
+        <!--div>
             <label>Actors</label>
             <h5>Choose from list:</h5>
             <div ng-dropdown-multiselect="" options="actorList" selected-model="selectedActors"
@@ -36,7 +36,8 @@
                 </button>
             </div>
             <br>
-        </div>
+        </div-->
+        <actor-selector selectedActors="selectedActors" actorList="actorList"></actor-selector>
         <button class="btn btn-primary pull-right" ng-click="createMovie()"
                 ng-disabled="!movie.name || !movie.releaseDate || !movie.duration">
             Submit

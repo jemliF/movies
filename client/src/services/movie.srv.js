@@ -14,14 +14,17 @@ moviesApp.service('MovieService', ['$http', function ($http) {
 
     this.getAllBy = function (sortField, sortSense, user, movie) {
         var url = API_URL;
-        if (sortSense || sortField || user || movie) {
-            url += '?';
-            sortField ? url += '?sortBy=' + sortField : '';
-            sortSense ? url += '?sortSense=' + sortSense : '';
-            movie ? url += '?movie=' + movie : '';
-            user ? url += '?user=' + user : '';
-            return $http.get(url);
+        url += '?' + 'sortBy=' + (sortField || 'createdAt');
+        if (sortSense) {
+            sortSense != null ? url += '&sortSense=' + sortSense : url += '&sortSense=' + 'desc';
         }
+        if (movie) {
+            movie != null ? url += '&movie=' + movie : null;
+        }
+        if (user) {
+            user != null ? url += '&createdBy=' + user : null;
+        }
+        return $http.get(url);
     };
 
 

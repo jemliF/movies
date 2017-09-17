@@ -10,6 +10,7 @@ const passport = require('passport');
 const mongodb = require('./providers/mongodb');
 
 const app = express();
+
 app.use(cors());
 app.use(boom());
 app.use(passport.initialize());
@@ -21,11 +22,11 @@ passport.deserializeUser((user, done) => {
     done(null, user);
 });
 
-app.use(bodyParser.urlencoded({
+/*app.use(bodyParser.urlencoded({
     extended: false
-}));
+}));*/
 app.use(bodyParser.json());
-app.use(morgan('dev'));
+//app.use(morgan('dev'));
 app.use(morgan('combined', {
     stream: require('./config/morgan')
 }));
@@ -39,6 +40,10 @@ app.use('/api/v1', require('./app/controllers/ratings'));
 mongodb.check();
 require('./utils/passport');
 
-app.listen(process.env.APP_PORT, () => {
+const server = app.listen(process.env.APP_PORT, () => {
     console.log('+++++++++++++++ Server running at ' + process.env.APP_PORT + ' ++++++++++++++++');
 });
+
+require('./utils/socket')(server);
+
+

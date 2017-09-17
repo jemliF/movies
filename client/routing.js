@@ -39,7 +39,7 @@ moviesApp.config(['$stateProvider', '$urlRouterProvider', function ($stateProvid
                 loggedIn: onlyLoggedIn
             }
         });
-    $urlRouterProvider.otherwise('/home');
+    $urlRouterProvider.otherwise('/');
 }]);
 
 var onlyLoggedIn = function ($q, jwtHelper, $cookies) {
