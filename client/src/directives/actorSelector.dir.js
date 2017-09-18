@@ -5,7 +5,7 @@ moviesApp.directive('actorSelector', [function () {
         controller: 'ActorSelectorController',
         scope: {
             actorList: '=',
-            selectedactors: '=',
+            selectedActors: '='
         }
     }
 }]);

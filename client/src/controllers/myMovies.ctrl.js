@@ -15,8 +15,6 @@ moviesApp.controller('MyMoviesController', ['$scope', 'UserService', 'MovieServi
 
         $scope.fetchMovies = function () {
             getMovies();
-            $cookies.put('moviesSortBy', $scope.sortField);
-            $cookies.put('moviesSortSense', $scope.sortSense);
         };
 
         getMovies();

@@ -26,7 +26,7 @@ exports.create = (req, res) => {
 };
 
 exports.get = (req, res) => {
-    Movie.findOne({ _id: req.params.id })
+    Movie.findOne({_id: req.params.id})
         .exec({}, (err, movie) => {
             if (err) {
                 res.boom.badImplementation('Error finding movie');
@@ -48,7 +48,7 @@ exports.getAll = (req, res) => {
     req.query.createdBy ? find.createdBy = req.query.createdBy : null;
     req.query.movie ? find.movie = req.query.movie : null;
     Movie.find(find)
-        .populate({ path: 'actors', model: 'actor' })
+        .populate({path: 'actors', model: 'actor'})
         .populate('createdBy', '-password')
         .sort(sort)
         .exec({}, (err, movies) => {
@@ -61,7 +61,7 @@ exports.getAll = (req, res) => {
 };
 
 exports.update = (req, res) => {
-    Movie.findOne({ _id: req.params.id })
+    Movie.findOne({_id: req.params.id})
         .exec({}, (err, movie) => {
             if (err) {
                 res.boom.badImplementation('Error identifying movie');
@@ -71,7 +71,7 @@ exports.update = (req, res) => {
                         if (err) {
                             res.boom.badData(hooks.prettifyValidationErrors(err.details));
                         } else {
-                            Movie.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, updatedMovie) {
+                            Movie.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}, function (err, updatedMovie) {
                                 if (err) {
                                     if (err.code == '11000') {
                                         res.boom.badData('Movie \'' + value.name + '\' already exists');
@@ -79,7 +79,10 @@ exports.update = (req, res) => {
                                         res.boom.badImplementation('Error updating movie');
                                     }
                                 } else {
-                                    res.json(updatedMovie);
+                                    Movie
+                                        .populate(updatedMovie, 'createdBy actors', (err, movie) => {
+                                            res.json(updatedMovie);
+                                        });
                                 }
                             });
                         }
@@ -92,17 +95,17 @@ exports.update = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-    Movie.findOne({ _id: req.params.id })
+    Movie.findOne({_id: req.params.id})
         .exec({}, (err, movie) => {
             if (err) {
                 res.boom.badImplementation('Error identifying movie');
             } else {
                 if (movie) {
-                    Rating.remove({ movie: movie._id }, function (err) {
+                    Rating.remove({movie: movie._id}, function (err) {
                         if (err) {
                             res.boom.badImplementation('Error deleting movie ratings');
                         } else {
-                            Movie.remove({ _id: req.params.id }, function (err) {
+                            Movie.remove({_id: req.params.id}, function (err) {
                                 if (err) {
                                     res.boom.badImplementation('Error deleting movie');
                                 } else {

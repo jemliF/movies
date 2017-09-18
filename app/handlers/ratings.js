@@ -1,4 +1,5 @@
 const Rating = require('../models/Rating').model;
+const Movie = require('../models/Movie').model;
 const RatingValidation = require('../../utils/validation').Rating;
 const Joi = require('joi');
 const hooks = require('../../utils/hooks');
@@ -17,9 +18,30 @@ exports.create = (req, res) => {
                         res.boom.badImplementation('Error saving rating');
                     }
                 } else {
-                    Rating
-                        .populate(newRating, 'user movie', (err, rating) => {
-                            res.json(newRating);
+                    Rating.find({movie: req.body.movie})
+                        .exec({}, (err, ratings)=> {
+                            if (err) {
+                                res.boom.badImplementation('Error updating movie ratings');
+                            } else {
+                                if (ratings) {
+                                    let sum = 0;
+                                    ratings.forEach((rating, index)=> {
+                                        sum += rating.value;
+                                        if (index === ratings.length - 1) {
+                                            Movie.update({_id: req.body.movie}, {rating: sum / ratings.length}, (err, affected, resp)=> {
+                                                if (err) {
+                                                    res.boom.badImplementation('Error updating movie ratings');
+                                                } else {
+                                                    Rating
+                                                        .populate(newRating, 'user movie', (err, rating) => {
+                                                            res.json(newRating);
+                                                        });
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }
                         });
                 }
             });
@@ -28,7 +50,7 @@ exports.create = (req, res) => {
 };
 
 exports.get = (req, res) => {
-    Rating.findOne({ _id: req.params.id })
+    Rating.findOne({_id: req.params.id})
         .exec({}, (err, rating) => {
             if (err) {
                 res.boom.badImplementation('Error finding rating');
@@ -55,31 +77,13 @@ exports.getAll = (req, res) => {
 
                 res.boom.badImplementation('Error finding ratings');
             } else {
-                req.query.total ? res.json(ratings.length || 0) : res.json(ratings || []);
-                /*if (req.query.count) {
-                    result.count = ratings.count;
-                }
-                if (req.query.items) {
-                    result.items = ratings;
-                }
-                if (req.query.total) {
-                    let sum = 0;
-                    ratings.forEach(function (rating, index) {
-                        sum += rating.value;
-                        if (index === ratings.length - 1) {
-                            result.total = sum / ratings.length;
-                            res.json(result);
-                        }
-                    });
-                } else {
-                    res.json(result);
-                }*/
+                res.json(ratings || []);
             }
         });
 };
 
 exports.update = (req, res) => {
-    Rating.findOne({ _id: req.params.id })
+    Rating.findOne({_id: req.params.id})
         .exec({}, (err, rating) => {
             if (err) {
 
@@ -91,7 +95,7 @@ exports.update = (req, res) => {
 
                             res.boom.badData(hooks.prettifyValidationErrors(err.details));
                         } else {
-                            Rating.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true }, function (err, updatedRating) {
+                            Rating.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}, function (err, updatedRating) {
                                 if (err) {
 
                                     if (err.code == '11000') {
@@ -100,9 +104,30 @@ exports.update = (req, res) => {
                                         res.boom.badImplementation('Error updating rating');
                                     }
                                 } else {
-                                    Rating
-                                        .populate(updatedRating, 'user movie', (err, rating) => {
-                                            res.json(updatedRating);
+                                    Rating.find({movie: req.body.movie})
+                                        .exec({}, (err, ratings)=> {
+                                            if (err) {
+                                                res.boom.badImplementation('Error updating movie ratings');
+                                            } else {
+                                                if (ratings) {
+                                                    let sum = 0;
+                                                    ratings.forEach((rating, index)=> {
+                                                        sum += rating.value;
+                                                        if (index === ratings.length - 1) {
+                                                            Movie.update({_id: req.body.movie}, {rating: sum / ratings.length}, (err, affected, resp)=> {
+                                                                if (err) {
+                                                                    res.boom.badImplementation('Error updating movie ratings');
+                                                                } else {
+                                                                    Rating
+                                                                        .populate(updatedRating, 'user movie', (err, rating) => {
+                                                                            res.json(updatedRating);
+                                                                        });
+                                                                }
+                                                            });
+                                                        }
+                                                    });
+                                                }
+                                            }
                                         });
                                 }
                             });
@@ -116,13 +141,13 @@ exports.update = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-    Rating.findOne({ _id: req.params.id })
+    Rating.findOne({_id: req.params.id})
         .exec({}, (err, rating) => {
             if (err) {
                 res.boom.badImplementation('Error identifying rating');
             } else {
                 if (rating) {
-                    Rating.remove({ _id: req.params.id }, function (err) {
+                    Rating.remove({_id: req.params.id}, function (err) {
                         if (err) {
                             res.boom.badImplementation('Error updating rating');
                         } else {

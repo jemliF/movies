@@ -37,7 +37,8 @@
             </div>
             <br>
         </div-->
-        <actor-selector selectedActors="selectedActors" actorList="actorList"></actor-selector>
+        <actor-selector selected-actors="selectedActors" actor-list="actorList"
+                        ng-if="selectedActors && actorList"></actor-selector>
         <button class="btn btn-primary pull-right" ng-click="createMovie()"
                 ng-disabled="!movie.name || !movie.releaseDate || !movie.duration">
             Submit

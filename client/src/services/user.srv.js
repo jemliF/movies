@@ -8,6 +8,4 @@ moviesApp.service('UserService', ['$http', function ($http) {
     this.login = function (email, password) {
         return $http.post(API_URL + 'login', {email: email, password: password});
     }
-
-
 }]);

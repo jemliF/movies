@@ -1,91 +1,101 @@
 <div class="well well-sm" ng-show="movie">
-	<div class="row">
-		<div class="col-xs-3 col-md-3 text-center">
-			<img ng-src="https://dummyimage.com/256x256&text={{movie.createdBy.firstname+' '+movie.createdBy.lastname}}" class="img-rounded img-responsive"
-			/>
-		</div>
-		<div class="col-xs-9 col-md-9 section-box">
-			<div class="row">
-				<h4>
-					{{movie.name}}&nbsp;<small><i class="fa fa-calendar"></i>&nbsp;{{movie.releaseDate|date:'MMM/dd/yyyy'}}
+    <div class="row">
+        <div class="col-xs-3 col-md-3 text-center">
+            <img ng-src="https://dummyimage.com/256x256&text={{movie.createdBy.firstname+' '+movie.createdBy.lastname}}"
+                 class="img-rounded img-responsive"
+            />
+        </div>
+        <div class="col-xs-9 col-md-9 section-box">
+            <div class="row">
+                <h4>
+                    {{movie.name}}&nbsp;
+                    <small><i class="fa fa-calendar"></i>&nbsp;{{movie.releaseDate|date:'MMM/dd/yyyy'}}
                     </small>
-					<span class="separator">|</span>
-					<small><i class="fa fa-clock-o"></i>&nbsp;{{movie.duration}}&nbsp;h</small>
-					<small class="pull-right" style="margin-right: 10px;">
-                            <i class="fa fa-edit text-primary" ng-if="options.editable" role="button"
-                               ng-click="toggleEdit()"></i>
-                            <i class="fa fa-trash text-danger" ng-if="options.editable" role="button"
-                               ng-click="delete()"></i>
-                        </small>
-				</h4>
-			</div>
-			<hr/>
-			<div class="row rating-desc">
-				<p><i class="fa fa-film"></i>&nbsp;Casting</p>
-				<ul>
-					<li ng-repeat="actor in movie.actors">{{actor.firstname+' '+actor.lastname}}</li>
-				</ul>
-			</div>
-			<hr/>
-			<div class="row rating-desc">
-				<div class="col-md-8 col-sm-6">
-					<input-stars max="5" ng-model="userRating.value" ng-click="toggleRating()" ng-if="!options.editable"></input-stars>
-					<input type="text" ng-if="showCommentField" ng-model="userRating.comment" class="form-control" placeholder="Add a comment"
-						ng-keyup="($event.which === 13)?rate():null">
-				</div>
-				<div class="col-md-4 col-sm-6">
-					{{movie.ratings.length}}&nbsp;<i class="fa fa-user text-primary"></i>&nbsp;|&nbsp; {{movie.rating}}&nbsp;
-					<i class="fa fa-star text-warning"></i>&nbsp;
-					<i class="fa text-primary" ng-class="{'fa-chevron-up': showRatings, 'fa-chevron-down': !showRatings}" role="button" ng-click="showRatings=!showRatings"></i>
-				</div>
-			</div>
-			<hr ng-if="showRatings">
-			<div class="row rating-desc" ng-if="showRatings">
-				<p ng-if="movie.ratings.length === 0">Not yet rated!</p>
-				<div ng-repeat="rating in movie.ratings" ng-if="movie.ratings.length > 0">
-					<div class="col-md-4 col-sm-4">
-						<i class="fa fa-user"></i>&nbsp;{{rating.user.firstname+' '+rating.user.lastname}}
-					</div>
-					<div class="col-md-3 col-sm-3">
-						<i class="fa fa-star text-warning" ng-repeat="n in [] | range:rating.value"></i>
-					</div>
-					<div class="col-md-5 col-sm-5">
-						<i class="fa fa-commenting"></i>&nbsp;{{rating.comment}}
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+                    <span class="separator">|</span>
+                    <small><i class="fa fa-clock-o"></i>&nbsp;{{movie.duration}}&nbsp;h</small>
+                    <small class="pull-right" style="margin-right: 10px;">
+                        <i class="fa fa-edit text-primary" ng-if="options.editable" role="button"
+                           ng-click="toggleEdit()"></i>
+                        <i class="fa fa-trash text-danger" ng-if="options.editable" role="button"
+                           ng-click="delete()"></i>
+                    </small>
+                </h4>
+            </div>
+            <hr/>
+            <div class="row rating-desc">
+                <p><i class="fa fa-film"></i>&nbsp;Casting</p>
+                <ul>
+                    <li ng-repeat="actor in movie.actors">{{actor.firstname+' '+actor.lastname}}</li>
+                </ul>
+            </div>
+            <hr ng-if="!options.editable"/>
+            <div class="row rating-desc" ng-if="!options.editable">
+                <div class="col-md-8 col-sm-6">
+                    <input-stars max="5" ng-model="userRating.value" ng-click="toggleRating()"></input-stars>
+                    <input type="text" ng-if="showCommentField" ng-model="userRating.comment" class="form-control"
+                           placeholder="Add a comment"
+                           ng-keyup="($event.which === 13)?rate():null">
+                </div>
+                <div class="col-md-4 col-sm-6">
+                    {{ratings.length}}&nbsp;<i class="fa fa-user text-primary"></i>&nbsp;|&nbsp; {{movie.rating}}&nbsp;
+                    <i class="fa fa-star text-warning"></i>&nbsp;
+                    <i class="fa text-primary"
+                       ng-class="{'fa-chevron-up': showRatings, 'fa-chevron-down': !showRatings}" role="button"
+                       ng-click="showRatings=!showRatings"></i>
+                </div>
+            </div>
+            <hr ng-if="showRatings && !options.editable">
+            <div class="row rating-desc" ng-if="showRatings">
+                <p ng-if="ratings.length === 0">Not yet rated!</p>
+                <div ng-repeat="rating in ratings" ng-if="ratings.length > 0">
+                    <div class="col-md-4 col-sm-4">
+                        <i class="fa fa-user"></i>&nbsp;{{rating.user.firstname+' '+rating.user.lastname}}
+                    </div>
+                    <div class="col-md-3 col-sm-3">
+                        <i class="fa fa-star text-warning" ng-repeat="n in [] | range:rating.value"></i>
+                    </div>
+                    <div class="col-md-5 col-sm-5">
+                        <i class="fa fa-commenting"></i>&nbsp;{{rating.comment}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div id="editModal" class="modal fade" role="dialog">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">Edit Movie</h4>
-			</div>
-			<div class="modal-body">
-				<form>
-					<div class="form-group">
-						<input type="text" class="form-control" autofocus ng-model="editableMovie.name" name="name" placeholder="Name">
-					</div>
-					<div class="form-group">
-						<input type="number" class="form-control" ng-model="editableMovie.duration" name="duration" step="0.01" placeholder="Duration">
-					</div>
-					<div class="form-group">
-						<input type="date" class="form-control" ng-model="editableMovie.releaseDate" name="releaseDate" placeholder="Release Date">
-					</div>
-					<actor-selector selectedActors="selectedActors" actorList="actorList"></actor-selector>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button class="btn btn-primary" ng-click="update()" ng-disabled="!movie.name || !movie.releaseDate || !movie.duration">
-                Submit
+<div ng-attr-id="{{'editModal'+movie._id}}" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Edit Movie</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" autofocus ng-model="editableMovie.name" name="name"
+                               placeholder="Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="number" class="form-control" ng-model="editableMovie.duration" name="duration"
+                               step="0.01" placeholder="Duration">
+                    </div>
+                    <div class="form-group">
+                        <input type="date" class="form-control" ng-model="editableMovie.releaseDate" name="releaseDate"
+                               placeholder="Release Date">
+                    </div>
+                    <actor-selector selected-actors="selectedActors" actor-list="actorList"
+                                    ng-if="selectedActors && actorList"></actor-selector>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" ng-click="update()"
+                        ng-disabled="!movie.name || !movie.releaseDate || !movie.duration">
+                    Submit
                 </button>
-				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-			</div>
-		</div>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
 
-	</div>
+    </div>
 </div>

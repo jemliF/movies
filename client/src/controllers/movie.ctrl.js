@@ -1,27 +1,25 @@
-moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService', '$cookies', 'RatingService', 'currentUser', '$rootScope', 'eventSocket',
-    function ($scope, UserService, MovieService, $cookies, RatingService, currentUser, $rootScope, eventSocket) {
+moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService', '$cookies', 'RatingService', 'currentUser', '$rootScope', 'eventSocket', 'ActorService',
+    function ($scope, UserService, MovieService, $cookies, RatingService, currentUser, $rootScope, eventSocket, ActorService) {
         var sum = 0;
+        $scope.selectedActors = [];
         $scope.actorList = [];
-        $scope.newActor = {};
-        $scope.actorSelectOptions = { enableSearch: true };
-        $scope.actors = [];
+        $scope.actorSelectOptions = {enableSearch: true};
         $scope.userRating = {
             value: 0,
             comment: ''
         };
         $scope.showCommentField = false;
         $scope.showRatings = false;
-        //$scope.toggleEdit = false;
         $scope.movieAlreadyRatedByUser = false;
         var fetchMovieRatings = function () {
             RatingService.getAllBy(null, $scope.movie._id)
                 .then(function (ratings) {
-                    $scope.movie.ratings = ratings.data;
+                    $scope.ratings = ratings.data;
                     sum = 0;
-                    $scope.movie.ratings.forEach(function (rating, indice) {
+                    $scope.ratings.forEach(function (rating, indice) {
                         sum += rating.value;
-                        if (indice === $scope.movie.ratings.length - 1) {
-                            $scope.movie.rating = sum / $scope.movie.ratings.length;
+                        if (indice === $scope.ratings.length - 1) {
+                            $scope.movie.rating = sum / $scope.ratings.length;
                         }
                     });
                 }, function (err) {
@@ -29,74 +27,111 @@ moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService'
                 });
         };
 
-        fetchMovieRatings();
-        RatingService.getAllBy(currentUser._id, $scope.movie._id)
-            .then(function (userRating) {
-                if (userRating.data.length > 0) {
-                    $scope.movieAlreadyRatedByUser = true;
-                    $scope.userRating = userRating.data[0];
+        if (!$scope.options.editable) {
+            fetchMovieRatings();
+            RatingService.getAllBy(currentUser._id, $scope.movie._id)
+                .then(function (userRating) {
+                    if (userRating.data.length > 0) {
+                        $scope.movieAlreadyRatedByUser = true;
+                        $scope.userRating = userRating.data[0];
+                    }
+                }, function (err) {
+                    console.error(err);
+                });
+            $scope.toggleRating = function () {
+                $scope.showCommentField = true;
+            }
+            $scope.rate = function () {
+                $scope.showCommentField = false;
+                if ($scope.movieAlreadyRatedByUser) {
+                    RatingService.update($scope.userRating._id, {
+                        user: currentUser._id,
+                        movie: $scope.movie._id,
+                        value: $scope.userRating.value,
+                        date: new Date(),
+                        comment: $scope.userRating.comment
+                    })
+                        .then(function (rating) {
+                            console.log(rating);
+                            $scope.userRating = rating.data;
+                            eventSocket.emit('movieRated', {rating: rating.data});
+                            fetchMovieRatings
+                        }, function (err) {
+                            console.error(err);
+                        });
+                } else {
+                    RatingService.create({
+                        user: currentUser._id,
+                        movie: $scope.movie._id,
+                        value: $scope.userRating.value,
+                        date: new Date(),
+                        comment: $scope.userRating.comment
+                    })
+                        .then(function (rating) {
+                            console.log(rating);
+                            $scope.userRating = rating.data;
+                            eventSocket.emit('movieRated', {rating: rating.data});
+                            fetchMovieRatings
+                        }, function (err) {
+                            console.error(err);
+                        });
                 }
-            }, function (err) {
-                console.error(err);
-            });
-        $scope.toggleRating = function () {
-            $scope.showCommentField = true;
-        }
-        $scope.rate = function () {
-            $scope.showCommentField = false;
-            if ($scope.movieAlreadyRatedByUser) {
-                RatingService.update($scope.userRating._id, {
-                    user: currentUser._id,
-                    movie: $scope.movie._id,
-                    value: $scope.userRating.value,
-                    date: new Date(),
-                    comment: $scope.userRating.comment
-                })
-                    .then(function (rating) {
-                        console.log(rating);
-                        $scope.userRating = rating.data;
-                        eventSocket.emit('movieRated', { rating: rating.data });
-                        fetchMovieRatings();
-                    }, function (err) {
-                        console.error(err);
+            };
+        } else {
+            ActorService.getAll()
+                .then(function (res) {
+                    $scope.actorList = res.data.map(function (actor) {
+                        return {id: actor._id, label: actor.firstname + ' ' + actor.lastname};
                     });
-            } else {
-                RatingService.create({
-                    user: currentUser._id,
-                    movie: $scope.movie._id,
-                    value: $scope.userRating.value,
-                    date: new Date(),
-                    comment: $scope.userRating.comment
-                })
-                    .then(function (rating) {
-                        console.log(rating);
-                        $scope.userRating = rating.data;
-                        eventSocket.emit('movieRated', { rating: rating.data });
-                        fetchMovieRatings();
-                    }, function (err) {
-                        console.error(err);
-                    });
+                }, function (err) {
+                    alert(err.data.message);
+                });
+            $scope.delete = function () {
+                if (window.confirm('Delete ' + $scope.movie.name)) {
+                    MovieService.delete($scope.movie._id)
+                        .then(function (result) {
+                            $rootScope.$broadcast('movieDeleted', $scope.movie._id);
+                            eventSocket.emit('movieDeleted', {movie: $scope.movie});
+                            alert('Movie deleted successfully');
+                        }, function (err) {
+                            console.error(err);
+                            if (err.data.message) {
+                                alert(err.data.message);
+                            }
+                        });
+                }
             }
-        };
 
-        $scope.delete = function () {
-            if (window.confirm('Delete ' + $scope.movie.name)) {
-                MovieService.delete($scope.movie._id)
-                    .then(function (result) {
-                        $rootScope.$broadcast('movieDeleted', $scope.movie._id);
-                        eventSocket.emit('movieDeleted', { movie: $scope.movie });
-                        alert('Movie deleted successfully');
+            $scope.toggleEdit = function () {
+                $scope.editableMovie = $scope.movie;
+                $scope.editableMovie.releaseDate = new Date($scope.editableMovie.releaseDate);
+                $scope.editableMovie.releaseDate = new Date($scope.editableMovie.releaseDate.getFullYear(),
+                    $scope.editableMovie.releaseDate.getMonth(), $scope.editableMovie.releaseDate.getDate());
+                $scope.selectedActors = $scope.movie.actors.map(function (actor) {
+                    return {id: actor._id, label: actor.firstname + ' ' + actor.lastname};
+                });
+                $('#editModal' + $scope.movie._id).modal('show');
+                console.log($scope.editableMovie);
+            };
+
+            $scope.update = function () {
+                $scope.editableMovie.actors = $scope.selectedActors.map(function (actor) {
+                    return actor.id;
+                });
+                $scope.editableMovie.createdBy = currentUser._id;
+                MovieService.update($scope.movie._id, $scope.editableMovie)
+                    .then(function (res) {
+                        console.log(res.data);
+                        //$scope.movie = res.data;
+                        Object.assign($scope.movie, res.data);
+                        $('#editModal' + $scope.movie._id).modal('hide');
+                        eventSocket.emit('movieEdited', {movie: $scope.movie});
                     }, function (err) {
                         console.error(err);
-                        if (err.data.message) {
-                            alert(err.data.message);
-                        }
+                        alert(err.data.message);
                     });
-            }
+            };
+
         }
 
-        $scope.toggleEdit = function () {
-            $scope.editableMovie = $scope.movie;
-            $('#editModal').modal('show');
-        };
     }]);

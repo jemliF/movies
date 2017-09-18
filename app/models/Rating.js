@@ -9,9 +9,9 @@ const schema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    value:{
-      type: Number,
-      required: true
+    value: {
+        type: Number,
+        required: true
     },
     user: {
         type: mongoose.Schema.Types.ObjectId,
@@ -31,6 +31,7 @@ const schema = new mongoose.Schema({
 }, {
     versionKey: false
 });
+
 
 schema.index({user: 1, movie: 1}, {unique: true});
 

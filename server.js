@@ -26,7 +26,7 @@ passport.deserializeUser((user, done) => {
     extended: false
 }));*/
 app.use(bodyParser.json());
-//app.use(morgan('dev'));
+app.use(morgan('dev'));
 app.use(morgan('combined', {
     stream: require('./config/morgan')
 }));
