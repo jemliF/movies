@@ -5,7 +5,7 @@
 Movies manager app, using MongoDB as database, hosted by MLab (formerly MongoLab), 
 alternatively you can use a Docker container to host your data.
 
-App is externally configured using a .env file or config folder. 
+App is externally configured using a .env file and config folder. 
 
 **Installation**
 * Install Node (latest version recommended)
