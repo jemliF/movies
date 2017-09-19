@@ -6,7 +6,13 @@ const Movie = require('../models/Movie').model;
 const RatingValidation = require('../../utils/validation').Rating;
 const Joi = require('joi');
 const hooks = require('../../utils/hooks');
-
+/**
+ * Create a rating
+ * @memberof ratings
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.create = (req, res) => {
     Joi.validate(req.body, RatingValidation, (err, value) => {
         if (err) {
@@ -22,16 +28,16 @@ exports.create = (req, res) => {
                     }
                 } else {
                     Rating.find({movie: req.body.movie})
-                        .exec({}, (err, ratings)=> {
+                        .exec({}, (err, ratings) => {
                             if (err) {
                                 res.boom.badImplementation('Error updating movie ratings');
                             } else {
                                 if (ratings) {
                                     let sum = 0;
-                                    ratings.forEach((rating, index)=> {
+                                    ratings.forEach((rating, index) => {
                                         sum += rating.value;
                                         if (index === ratings.length - 1) {
-                                            Movie.update({_id: req.body.movie}, {rating: sum / ratings.length}, (err, affected, resp)=> {
+                                            Movie.update({_id: req.body.movie}, {rating: sum / ratings.length}, (err, affected, resp) => {
                                                 if (err) {
                                                     res.boom.badImplementation('Error updating movie ratings');
                                                 } else {
@@ -51,7 +57,13 @@ exports.create = (req, res) => {
         }
     });
 };
-
+/**
+ * Get a rating
+ * @memberof ratings
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.get = (req, res) => {
     Rating.findOne({_id: req.params.id})
         .exec({}, (err, rating) => {
@@ -66,7 +78,13 @@ exports.get = (req, res) => {
             }
         });
 };
-
+/**
+ * Get ratings
+ * @memberof ratings
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.getAll = (req, res) => {
     let request = {};
     req.query.movie ? request.movie = req.query.movie : null;
@@ -84,7 +102,13 @@ exports.getAll = (req, res) => {
             }
         });
 };
-
+/**
+ * Update a rating
+ * @memberof ratings
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.update = (req, res) => {
     Rating.findOne({_id: req.params.id})
         .exec({}, (err, rating) => {
@@ -98,7 +122,8 @@ exports.update = (req, res) => {
 
                             res.boom.badData(hooks.prettifyValidationErrors(err.details));
                         } else {
-                            Rating.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}, function (err, updatedRating) {
+                            value.updatedAt = new Date();
+                            Rating.findByIdAndUpdate(req.params.id, {$set: value}, {new: true}, function (err, updatedRating) {
                                 if (err) {
 
                                     if (err.code == '11000') {
@@ -108,16 +133,16 @@ exports.update = (req, res) => {
                                     }
                                 } else {
                                     Rating.find({movie: req.body.movie})
-                                        .exec({}, (err, ratings)=> {
+                                        .exec({}, (err, ratings) => {
                                             if (err) {
                                                 res.boom.badImplementation('Error updating movie ratings');
                                             } else {
                                                 if (ratings) {
                                                     let sum = 0;
-                                                    ratings.forEach((rating, index)=> {
+                                                    ratings.forEach((rating, index) => {
                                                         sum += rating.value;
                                                         if (index === ratings.length - 1) {
-                                                            Movie.update({_id: req.body.movie}, {rating: sum / ratings.length}, (err, affected, resp)=> {
+                                                            Movie.update({_id: req.body.movie}, {rating: sum / ratings.length}, (err, affected, resp) => {
                                                                 if (err) {
                                                                     res.boom.badImplementation('Error updating movie ratings');
                                                                 } else {
@@ -134,27 +159,6 @@ exports.update = (req, res) => {
                                         });
                                 }
                             });
-                        }
-                    });
-                } else {
-                    res.boom.notFound('Unable to identify rating ', req.params.id);
-                }
-            }
-        });
-};
-
-exports.delete = (req, res) => {
-    Rating.findOne({_id: req.params.id})
-        .exec({}, (err, rating) => {
-            if (err) {
-                res.boom.badImplementation('Error identifying rating');
-            } else {
-                if (rating) {
-                    Rating.remove({_id: req.params.id}, function (err) {
-                        if (err) {
-                            res.boom.badImplementation('Error updating rating');
-                        } else {
-                            res.status(200).end('Rating deleted successfully');
                         }
                     });
                 } else {

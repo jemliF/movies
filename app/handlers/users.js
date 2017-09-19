@@ -7,7 +7,13 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User').model;
 const UserValidation = require('../../utils/validation').User;
 const hooks = require('../../utils/hooks');
-
+/**
+ * User login
+ * @memberof users
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.login = (req, res) => {
     if (req.body.email && req.body.password) {
         User.findOne({email: req.body.email})
@@ -42,7 +48,13 @@ exports.login = (req, res) => {
         res.boom.badData('Missing credentials');
     }
 };
-
+/**
+ * User signup
+ * @memberof users
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.signup = (req, res) => {
     Joi.validate(req.body, UserValidation, (err, value) => {
         if (err) {
@@ -63,7 +75,13 @@ exports.signup = (req, res) => {
         }
     });
 };
-
+/**
+ * Get a single user
+ * @memberof users
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.get = (req, res) => {
     User.findOne({_id: req.params.id})
         .exec({}, (err, user) => {
@@ -78,7 +96,13 @@ exports.get = (req, res) => {
             }
         });
 };
-
+/**
+ * Update a single user
+ * @memberof users
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.update = (req, res) => {
     User.findOne({_id: req.params.id})
         .exec({}, (err, user) => {
@@ -90,7 +114,8 @@ exports.update = (req, res) => {
                         if (err) {
                             res.boom.badData(hooks.prettifyValidationErrors(err.details));
                         } else {
-                            User.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}, function (err, updatedUser) {
+                            value.updatedAt = new Date();
+                            User.findByIdAndUpdate(req.params.id, {$set: value}, {new: true}, function (err, updatedUser) {
                                 if (err) {
                                     if (err.code == '11000') {
                                         res.boom.badData('User \'' + value.email + '\' already exists');

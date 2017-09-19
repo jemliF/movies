@@ -16,6 +16,8 @@ moviesApp.controller('ActorSelectorController', ['$scope', 'ActorService', funct
                     id: res.data._id,
                     label: res.data.firstname + ' ' + res.data.lastname
                 });
+                $scope.newActor = {};
+                $scope.toggleNewActor = false;
             }, function (err) {
                 if (err.data.message) {
                     alert(err.data.message);

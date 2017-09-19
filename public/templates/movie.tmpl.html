@@ -34,29 +34,37 @@
                     <input-stars max="5" ng-model="userRating.value" ng-click="toggleRating()"></input-stars>
                     <input type="text" ng-if="showCommentField" ng-model="userRating.comment" class="form-control"
                            placeholder="Add a comment"
-                           ng-keyup="($event.which === 13)?rate():null">
+                           ng-keyup="($event.which === 13 && userRating.comment.length > 0)?rate():null">
                 </div>
                 <div class="col-md-4 col-sm-6">
                     {{ratings.length}}&nbsp;<i class="fa fa-user text-primary"></i>&nbsp;|&nbsp; {{movie.rating}}&nbsp;
                     <i class="fa fa-star text-warning"></i>&nbsp;
                     <i class="fa text-primary"
                        ng-class="{'fa-chevron-up': showRatings, 'fa-chevron-down': !showRatings}" role="button"
-                       ng-click="showRatings=!showRatings"></i>
+                       ng-click="toggleShowRatings()"></i>
                 </div>
             </div>
             <hr ng-if="showRatings && !options.editable">
-            <div class="row rating-desc" ng-if="showRatings">
+            <div class="rating-desc" ng-if="showRatings">
                 <p ng-if="ratings.length === 0">Not yet rated!</p>
                 <div ng-repeat="rating in ratings" ng-if="ratings.length > 0">
-                    <div class="col-md-4 col-sm-4">
-                        <i class="fa fa-user"></i>&nbsp;{{rating.user.firstname+' '+rating.user.lastname}}
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4 col-xs-7">
+                            <i class="fa fa-user"></i>&nbsp;{{rating.user.firstname+' '+rating.user.lastname}}
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-5">
+                            <i class="fa fa-star text-warning" ng-repeat="n in [] | range:rating.value"></i>
+                        </div>
+                        <div class="col-md-5 col-sm-5 col-xs-5 hidden-xs">
+                            <i class="fa fa-commenting"></i>&nbsp;{{rating.comment}}
+                        </div>
                     </div>
-                    <div class="col-md-3 col-sm-3">
-                        <i class="fa fa-star text-warning" ng-repeat="n in [] | range:rating.value"></i>
+                    <div class="row">
+                        <div class="col-xs-12 col-xs-offset-1 visible-xs">
+                            <i class="fa fa-commenting"></i>&nbsp;{{rating.comment}}
+                        </div>
                     </div>
-                    <div class="col-md-5 col-sm-5">
-                        <i class="fa fa-commenting"></i>&nbsp;{{rating.comment}}
-                    </div>
+                    <hr style="border-top: dotted 1px;">
                 </div>
             </div>
         </div>

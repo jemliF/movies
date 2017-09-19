@@ -10,14 +10,14 @@ moviesApp.controller('NavbarController', ['$scope', '$rootScope', '$cookies', '$
         });
 
         eventSocket.on('movieRated', function (data) {
-            alert('User ' + data.rating.user.firstname + ' ' + data.rating.user.lastname + 'just gave ' + data.rating.value + ' stars to \"' + data.rating.movie.name + '\"');
+            alert('User ' + data.rating.user.firstname + ' ' + data.rating.user.lastname + ' just gave ' + data.rating.value + ' stars to \"' + data.rating.movie.name + '\".');
         });
         eventSocket.on('movieDeleted', function (data) {
-            alert('Movie ' + data.movie.name + ' was deleted');
+            alert('Movie ' + data.movie.name + ' was deleted.');
         });
 
         eventSocket.on('movieEdited', function (data) {
-            alert('Movie ' + data.movie.name + ' was edited');
+            alert('Movie ' + data.movie.name + ' was edited.');
         });
 
         $scope.logout = function () {
