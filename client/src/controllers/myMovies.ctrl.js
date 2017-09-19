@@ -9,7 +9,9 @@ moviesApp.controller('MyMoviesController', ['$scope', 'UserService', 'MovieServi
                 .then(function (res) {
                     $scope.movies = res.data;
                 }, function (err) {
-                    console.error(err);
+                    if (err.data.message) {
+                        alert(err.data.message);
+                    }
                 });
         };
 
@@ -20,7 +22,6 @@ moviesApp.controller('MyMoviesController', ['$scope', 'UserService', 'MovieServi
         getMovies();
 
         $rootScope.$on('movieDeleted', function (evt, movieId) {
-            console.log('movieDeleted');
             $scope.movies = $scope.movies.filter(function (movie) {
                 return movie._id !== movieId;
             });

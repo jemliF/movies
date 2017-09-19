@@ -1,3 +1,6 @@
+/**
+ * @author Fathi Jemli <jemlifathi2013@gmail.com>
+ */
 const Movie = require('../models/Movie').model;
 const Rating = require('../models/Rating').model;
 const MovieValidation = require('../../utils/validation').Movie;

@@ -16,7 +16,9 @@ moviesApp.controller('HomeController', ['$scope', 'UserService', 'MovieService',
                 .then(function (res) {
                     $scope.movies = res.data;
                 }, function (err) {
-                    console.error(err);
+                    if (err.data.message) {
+                        alert(err.data.message);
+                    }
                 });
         };
 

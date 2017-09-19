@@ -13,32 +13,11 @@ moviesApp.controller('NewMovieController', ['$scope', 'currentUser', '$state', '
                     alert('Movie created successfully');
                     $state.go('home');
                 }, function (err) {
-                    console.error(err);
                     if (err.data.message) {
                         alert(err.data.message);
                     }
                 });
         };
-
-        /* $scope.$watch('selectedActors', function (newVal, oldVal) {
-         console.log('changed', newVal);
-         $scope.movie.actors = $scope.selectedActors.map(function (actor) {
-         return actor.id;
-         });
-         }, true);*/
-
-        /*$scope.createNewActor = function () {
-            ActorService.create($scope.newActor)
-                .then(function (res) {
-                    console.log(res.data);
-                    $scope.actorList.push({
-                        id: res.data._id,
-                        label: res.data.firstname + ' ' + res.data.lastname
-                    });
-                }, function (err) {
-                    console.error(err);
-                });
-        };*/
 
         ActorService.getAll()
             .then(function (res) {
@@ -46,6 +25,8 @@ moviesApp.controller('NewMovieController', ['$scope', 'currentUser', '$state', '
                     return {id: actor._id, label: actor.firstname + ' ' + actor.lastname};
                 });
             }, function (err) {
-                alert(err.data.message);
+                if (err.data.message) {
+                    alert(err.data.message);
+                }
             });
     }]);

@@ -27,7 +27,7 @@ gulp.task('js', function () {
     gulp.src(scripts)
         .pipe(sourcemaps.init())
         .pipe(concat('bundle.js'))
-        .pipe(uglify())
+        //.pipe(uglify())
         //.pipe(obfuscator())
         .pipe(gulp.dest('public/dist/js'));
 });

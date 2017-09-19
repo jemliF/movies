@@ -1,3 +1,6 @@
+/**
+ * @author Fathi Jemli <jemlifathi2013@gmail.com>
+ */
 const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 

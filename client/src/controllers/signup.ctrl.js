@@ -1,4 +1,5 @@
-moviesApp.controller('SignupController', ['$scope', 'UserService', '$state', function ($scope, UserService, $state) {
+moviesApp.controller('SignupController', ['$scope', 'UserService', '$state',
+    function ($scope, UserService, $state) {
     $scope.user = {};
     $scope.retypePassword = '';
     $scope.signup = function () {
@@ -7,7 +8,9 @@ moviesApp.controller('SignupController', ['$scope', 'UserService', '$state', fun
                 alert('Account created successfully');
                 $state.go('login');
             }, function (err) {
-                alert(err.data.message);
+                if (err.data.message) {
+                    alert(err.data.message);
+                }
             });
     };
 }]);

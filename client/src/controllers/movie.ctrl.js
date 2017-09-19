@@ -1,5 +1,7 @@
-moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService', '$cookies', 'RatingService', 'currentUser', '$rootScope', 'eventSocket', 'ActorService',
-    function ($scope, UserService, MovieService, $cookies, RatingService, currentUser, $rootScope, eventSocket, ActorService) {
+moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService', '$cookies',
+    'RatingService', 'currentUser', '$rootScope', 'eventSocket', 'ActorService',
+    function ($scope, UserService, MovieService, $cookies,
+              RatingService, currentUser, $rootScope, eventSocket, ActorService) {
         var sum = 0;
         $scope.selectedActors = [];
         $scope.actorList = [];
@@ -23,7 +25,9 @@ moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService'
                         }
                     });
                 }, function (err) {
-                    console.error(err);
+                    if (err.data.message) {
+                        alert(err.data.message);
+                    }
                 });
         };
 
@@ -94,7 +98,6 @@ moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService'
                             eventSocket.emit('movieDeleted', {movie: $scope.movie});
                             alert('Movie deleted successfully');
                         }, function (err) {
-                            console.error(err);
                             if (err.data.message) {
                                 alert(err.data.message);
                             }
@@ -127,8 +130,9 @@ moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService'
                         $('#editModal' + $scope.movie._id).modal('hide');
                         eventSocket.emit('movieEdited', {movie: $scope.movie});
                     }, function (err) {
-                        console.error(err);
-                        alert(err.data.message);
+                        if (err.data.message) {
+                            alert(err.data.message);
+                        }
                     });
             };
 

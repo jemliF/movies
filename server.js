@@ -1,3 +1,6 @@
+/**
+ * @author fathi Jemli <jemlifathi2013@gmail.com>
+ */
 require('dotenv').config();
 
 const express = require('express');
@@ -23,10 +26,10 @@ passport.deserializeUser((user, done) => {
 });
 
 /*app.use(bodyParser.urlencoded({
-    extended: false
-}));*/
+ extended: false
+ }));*/
 app.use(bodyParser.json());
-app.use(morgan('dev'));
+process.env.ENVIRONMENT === 'dev' ? app.use(morgan('dev')) : null;
 app.use(morgan('combined', {
     stream: require('./config/morgan')
 }));
