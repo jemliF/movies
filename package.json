@@ -8,6 +8,7 @@
     "docker": "sudo chmod -R 777 . && sudo docker run -d -p 27017:27017 -p 28017:28017 -e MONGODB_USER=\"root\" -e MONGODB_DATABASE=\"movies\" -e MONGODB_PASS=\"password\" -v $(pwd)/data:/data/db tutum/mongodb",
     "dev": "nodemon server.js",
     "prod": "pm2 start server.js",
+    "start": "pm2 start server.js",
     "gulp": "gulp start"
   },
   "keywords": [],
