@@ -1,0 +1,41 @@
+version: "2.1"
+networks:
+  movies:
+    driver: bridge
+services:
+  nginx:
+    image: nginx
+    mem_limit: 100m
+    ports:
+      - "80:80"
+    volumes:
+      - ./public/dist/:/usr/share/nginx/html/:ro
+      - ./volumes/logs/:/var/log/nginx:rw
+    networks:
+      - movies
+  mongo:
+    image: tutum/mongodb
+    environment:
+      MONGODB_USER: "root"
+      MONGODB_DATABASE: "movies"
+      MONGODB_PASS: "password"
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db/:rw
+    networks:
+      - movies
+  backend:
+    build: .
+    mem_limit: 200m
+    command: "npm run dev"
+    ports:
+      - "4000:4000"
+    env_file: ./.env
+    volumes:
+      - ./:/src/:rw
+    depends_on:
+      mongo:
+        condition: service_started
+    networks:
+      - movies
