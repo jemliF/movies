@@ -12,6 +12,11 @@ const passport = require('passport');
 
 const mongodb = require('./providers/mongodb');
 
+/**
+ * Express app
+ * @constant
+ *
+ */
 const app = express();
 
 app.use(cors());

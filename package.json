@@ -7,9 +7,8 @@
     "test": "jasmine-node .",
     "docker": "sudo chmod -R 777 . && sudo docker run -d -p 27017:27017 -p 28017:28017 -e MONGODB_USER=\"root\" -e MONGODB_DATABASE=\"movies\" -e MONGODB_PASS=\"password\" -v $(pwd)/data:/data/db tutum/mongodb",
     "dev": "nodemon server.js",
-    "prod": "npm i -g pm2 && pm2 start server.js",
-    "gulp": "gulp start",
-    "doc": "npm i -g jsdoc http-server &&  jsdoc --destination=doc --recurse --tutorials=./app/** && cd doc && http-server"
+    "prod": "pm2 start server.js",
+    "gulp": "gulp start"
   },
   "keywords": [],
   "author": "",

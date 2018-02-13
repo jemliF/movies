@@ -7,7 +7,13 @@ const jwt = require('jsonwebtoken');
 const Actor = require('../models/Actor').model;
 const ActorValidation = require('../../utils/validation').Actor;
 const hooks = require('../../utils/hooks');
-
+/**
+ * Get a single actor
+ * @memberof actors
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.get = (req, res) => {
     Actor.findOne({_id: req.params.id})
         .exec({}, (err, actor) => {
@@ -22,7 +28,13 @@ exports.get = (req, res) => {
             }
         });
 };
-
+/**
+ * Get actors
+ * @memberof actors
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.getAll = (req, res) => {
     Actor.find({})
         .exec({}, (err, actor) => {
@@ -37,17 +49,23 @@ exports.getAll = (req, res) => {
             }
         });
 };
-
+/**
+ * Create an actor
+ * @memberof actors
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.create = (req, res) => {
     Joi.validate(req.body, ActorValidation, (err, value) => {
         if (err) {
-            
+
             res.boom.badData(hooks.prettifyValidationErrors(err.details));
         } else {
             let newActor = new Actor(value);
             newActor.save((err) => {
                 if (err) {
-                    
+
                     if (err.code == '11000') {
                         res.boom.badData('Actor \'' + value.email + '\' already exists');
                     } else {
@@ -60,7 +78,13 @@ exports.create = (req, res) => {
         }
     });
 };
-
+/**
+ * Update an actor
+ * @memberof actors
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.update = (req, res) => {
     Actor.findOne({_id: req.params.id})
         .exec({}, (err, actor) => {
@@ -72,7 +96,8 @@ exports.update = (req, res) => {
                         if (err) {
                             res.boom.badData(hooks.prettifyValidationErrors(err.details));
                         } else {
-                            Actor.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}, function (err, updatedActor) {
+                            value.updatedAt = new Date();
+                            Actor.findByIdAndUpdate(req.params.id, {$set: value}, {new: true}, function (err, updatedActor) {
                                 if (err) {
                                     if (err.code == '11000') {
                                         res.boom.badData('Actor \'' + value.email + '\' already exists');

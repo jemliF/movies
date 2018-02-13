@@ -13,26 +13,27 @@ moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService'
         $scope.showCommentField = false;
         $scope.showRatings = false;
         $scope.movieAlreadyRatedByUser = false;
-        var fetchMovieRatings = function () {
-            RatingService.getAllBy(null, $scope.movie._id)
-                .then(function (ratings) {
-                    $scope.ratings = ratings.data;
-                    sum = 0;
-                    $scope.ratings.forEach(function (rating, indice) {
-                        sum += rating.value;
-                        if (indice === $scope.ratings.length - 1) {
-                            $scope.movie.rating = sum / $scope.ratings.length;
-                        }
-                    });
-                }, function (err) {
-                    if (err.data.message) {
-                        alert(err.data.message);
-                    }
-                });
-        };
 
         if (!$scope.options.editable) {
+            var fetchMovieRatings = function () {
+                RatingService.getAllBy(null, $scope.movie._id)
+                    .then(function (ratings) {
+                        $scope.ratings = ratings.data;
+                        sum = 0;
+                        $scope.ratings.forEach(function (rating, indice) {
+                            sum += rating.value;
+                            if (indice === $scope.ratings.length - 1) {
+                                $scope.movie.rating = sum / $scope.ratings.length;
+                            }
+                        });
+                    }, function (err) {
+                        if (err.data.message) {
+                            alert(err.data.message);
+                        }
+                    });
+            };
             fetchMovieRatings();
+
             RatingService.getAllBy(currentUser._id, $scope.movie._id)
                 .then(function (userRating) {
                     if (userRating.data.length > 0) {
@@ -58,8 +59,8 @@ moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService'
                         .then(function (rating) {
                             console.log(rating);
                             $scope.userRating = rating.data;
+                            fetchMovieRatings();
                             eventSocket.emit('movieRated', {rating: rating.data});
-                            fetchMovieRatings
                         }, function (err) {
                             console.error(err);
                         });
@@ -74,12 +75,16 @@ moviesApp.controller('MovieController', ['$scope', 'UserService', 'MovieService'
                         .then(function (rating) {
                             console.log(rating);
                             $scope.userRating = rating.data;
+                            fetchMovieRatings();
                             eventSocket.emit('movieRated', {rating: rating.data});
-                            fetchMovieRatings
                         }, function (err) {
                             console.error(err);
                         });
                 }
+            };
+
+            $scope.toggleShowRatings = function () {
+                $scope.showRatings = !$scope.showRatings;
             };
         } else {
             ActorService.getAll()

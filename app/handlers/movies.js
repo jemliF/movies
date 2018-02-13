@@ -7,6 +7,13 @@ const MovieValidation = require('../../utils/validation').Movie;
 const Joi = require('joi');
 const hooks = require('../../utils/hooks');
 
+/**
+ * Create a movie
+ * @memberof movies
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.create = (req, res) => {
     Joi.validate(req.body, MovieValidation, (err, value) => {
         if (err) {
@@ -27,7 +34,13 @@ exports.create = (req, res) => {
         }
     });
 };
-
+/**
+ * Get a movie
+ * @memberof movies
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.get = (req, res) => {
     Movie.findOne({_id: req.params.id})
         .exec({}, (err, movie) => {
@@ -42,7 +55,13 @@ exports.get = (req, res) => {
             }
         });
 };
-
+/**
+ * Get movies
+ * @memberof movies
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.getAll = (req, res) => {
     //console.log(res.query.user);
     let sort = {}, find = {};
@@ -62,7 +81,13 @@ exports.getAll = (req, res) => {
             }
         });
 };
-
+/**
+ * Update a movie
+ * @memberof movies
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.update = (req, res) => {
     Movie.findOne({_id: req.params.id})
         .exec({}, (err, movie) => {
@@ -74,7 +99,8 @@ exports.update = (req, res) => {
                         if (err) {
                             res.boom.badData(hooks.prettifyValidationErrors(err.details));
                         } else {
-                            Movie.findByIdAndUpdate(req.params.id, {$set: req.body}, {new: true}, function (err, updatedMovie) {
+                            value.updatedAt = new Date();
+                            Movie.findByIdAndUpdate(req.params.id, {$set: value}, {new: true}, function (err, updatedMovie) {
                                 if (err) {
                                     if (err.code == '11000') {
                                         res.boom.badData('Movie \'' + value.name + '\' already exists');
@@ -96,7 +122,13 @@ exports.update = (req, res) => {
             }
         });
 };
-
+/**
+ * Delete a movie
+ * @memberof movies
+ * @function
+ * @param {Object} req - An HTTP request.
+ * @param {Object} res - An HTTP response.
+ */
 exports.delete = (req, res) => {
     Movie.findOne({_id: req.params.id})
         .exec({}, (err, movie) => {
