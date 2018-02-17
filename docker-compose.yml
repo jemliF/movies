@@ -3,16 +3,6 @@ networks:
   movies:
     driver: bridge
 services:
-  nginx:
-    image: nginx
-    mem_limit: 100m
-    ports:
-      - "80:80"
-    volumes:
-      - ./public/dist/:/usr/share/nginx/html/:ro
-      - ./volumes/logs/:/var/log/nginx:rw
-    networks:
-      - movies
   mongo:
     image: tutum/mongodb
     environment:
@@ -39,3 +29,12 @@ services:
         condition: service_started
     networks:
       - movies
+  ship:
+    image: portainer/portainer
+    #mem_limit: 50m
+    networks:
+      - movies
+    ports:
+      - "9000:9000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
